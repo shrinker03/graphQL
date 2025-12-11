@@ -1,25 +1,28 @@
 const express = require("express");
 const { buildSchema } = require("graphql");
-// FIX: Import from the specific Express adapter
 const { createHandler } = require("graphql-http/lib/use/express");
 const { ruruHTML } = require("ruru/server");
 
-const schema = buildSchema(`type Query { hello: String }`);
+
+const schema = buildSchema(`type Query {
+    quoteOfTheDay: String
+    random: Float!
+    rollThreeDice: [Int]
+}`)
 
 const rootValue = {
-  hello() {
-    return 'Hello World!';
-  },
+    quoteOfTheDay() {
+        return 'Padhle lado...'
+    },
+    random() {
+        return Math.random();
+    },
+    rollThreeDice() {
+        return [1, 2, 3].map(() => 1 + Math.floor(Math.random() * 6));
+    }
 }
 
 const app = express();
-
-// Serve the Ruru (GraphiQL) UI at the root
-app.get('/', (_req, res) => {
-  res.type('html');
-  res.end(ruruHTML({ endpoint: '/graphql' }));
-});
-
 // Serve the actual API logic at /graphql
 app.all('/graphql', createHandler({
     schema,
