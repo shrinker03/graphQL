@@ -5,20 +5,18 @@ const { ruruHTML } = require("ruru/server");
 
 
 const schema = buildSchema(`type Query {
-    quoteOfTheDay: String
-    random: Float!
-    rollThreeDice: [Int]
-}`)
+    rollDice(numDice: Int!, numSide: Int): [Int]    
+}`);
 
 const rootValue = {
-    quoteOfTheDay() {
-        return 'Padhle lado...'
-    },
-    random() {
-        return Math.random();
-    },
-    rollThreeDice() {
-        return [1, 2, 3].map(() => 1 + Math.floor(Math.random() * 6));
+    rollDice({numDice, numSide}) {
+        const output = [];
+        
+        for (let i = 0; i < numDice; i++) {
+            output.push(Math.floor(Math.random() * (numSide || 6)));
+        }
+
+        return output;
     }
 }
 
